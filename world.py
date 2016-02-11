@@ -70,6 +70,6 @@ class Order:
         self.components = components
         self._world = world
 
-    def compute_total_weight():
-        return sum([world.products[i] for i in self.components])
+    def compute_total_weight(self):
+        return sum([self._world.products[i] for i in self.components])
 
