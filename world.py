@@ -73,3 +73,9 @@ class Order:
     def compute_total_weight(self):
         return sum([self._world.products[i] for i in self.components])
 
+
+
+class Drone:
+
+    def __init__(self,x,y,dist_to_target):
+        pass
