@@ -10,8 +10,16 @@ class Planner(object):
 		self.sim = simulator
 
 	def run(self):
-		cost = self.cost_matrix(self.world)
-		for i in range()
+		cost = np.array(self.cost_matrix(self.world)).T
+
+		for i, cos in enumerate(cost):
+			ind = np.argmin(cos)
+			ware = cost[i,ind, 1]
+			cost[:,ind, 0] = float('inf')
+			self.world.drones[i].x = self.world.warehouses[ware].x
+			self.world.drones[i].y = self.world.warehouses[ware].y
+
+
 
 
 	def closest_drone(self):
@@ -57,17 +65,15 @@ class Planner(object):
 
 		for i, ordr in enumerate(orders):
 			for j, drone in enumerate(drones):
-				components = collections.Counter(ordr).getitems()
-				route = list()
+				# components = collections.Counter(ordr).getitems()
+				# route = list()
 				ware = warehouses[0]
-				tot = float('inf')
-				while len(components)> 0:
+				tot = (dist(ware, drone) + dist(ware, ordr), ware)
+				for k, warehouse in enumerate(warehouses[1:]):
 					ow = dist(ordr, warehouse)
 					dw = dist(drone, warehouse)
 					if tot > ow + dw:
-						ware = warehouse
-					
-				# for warehouse in warehouses[1:]:
+						ware = (ow+ dw, k)
 				cost_mat[i][j] = ware
 		return cost_mat
 
