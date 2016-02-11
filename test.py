@@ -3,6 +3,7 @@ import numpy
 import numpy as np
 from collections import deque
 import collections
+from serialiser import *
 
 class Planner(object):
 	def __init__(self, world, simulator):
@@ -12,14 +13,27 @@ class Planner(object):
 	def run(self):
 		cost = np.array(self.cost_matrix(self.world)).T
 
+		allcmd = []
+
 		for i, cos in enumerate(cost):
+			commands = []
+			deliver = []	
 			ind = np.argmin(cos)
 			ware = cost[i,ind, 1]
-			cost[:,ind, 0] = float('inf')
 			self.world.drones[i].x = self.world.warehouses[ware].x
 			self.world.drones[i].y = self.world.warehouses[ware].y
+			self.world.drones[i].dt = cost[i,ind, 0] + 2
+			for x in self.world.orders[ind].components:
+				self.world.warehouses[ware].store[x] -= 1
+				commands.append(LoadCommand(i, ware, x, 1))
+				deliver.append(DeliverCommand(i, ind, x, 1))
 
 
+			# self.world.drones[i].wait = 
+			cost[:,ind, 0] = float('inf')
+			allcmd = commands + deliver
+
+		serialise("test.out", allcmd)
 
 
 	def closest_drone(self):
