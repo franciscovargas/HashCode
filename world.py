@@ -11,10 +11,10 @@ class World:
         self.orders = []
 
     def add_warehouse(self, x, y, stock):
-        self.warehouses.append(Warehouse(x,y,stock))
+        self.warehouses.append(Warehouse(x,y,stock, self))
 
     def add_order(self, x, y, size, components):
-        self.orders.append(Order(x,y,size,components))
+        self.orders.append(Order(x,y,size,components, self))
 
     @staticmethod
     def load(fname):
@@ -35,7 +35,7 @@ class World:
 
         w_lines = warehouses*2
 
-        for w in xrange(warehouses):
+        for w in range(warehouses):
             x, y = [int(x.strip()) for x in lines[4 + w*2 + 0].split(' ', 2)]
             stock = [int(x.strip()) for x in lines[4 + w*2 + 1].split(' ', product_count)]
             world.add_warehouse(x, y, stock)
@@ -45,7 +45,9 @@ class World:
 
         o_lines = orders*3
 
-        for o in xrange(orders):
+        offset = offset+1
+
+        for o in range(orders):
             x, y = [int(x.strip()) for x in lines[offset + o*3 + 0].split(' ', 2)]
             size = int(lines[offset + o*3 + 1])
             components = [int(x.strip()) for x in lines[offset + o*3 + 2].split(' ', size)]
@@ -71,4 +73,3 @@ class Order:
     def compute_total_weight():
         return sum([world.products[i] for i in self.components])
 
-    def compute_weight()
