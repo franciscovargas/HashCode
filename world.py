@@ -77,5 +77,18 @@ class Order:
 
 class Drone:
 
-    def __init__(self,x,y,dist_to_target):
-        pass
+    def __init__(self,x,y, world,
+                 product = None,
+                 dist_to_target=(0, 0)):
+        self.x = x
+        self.y = y
+        self.world = world
+        self.dtx , self.dty = dist_to_target
+        self.product = product
+
+    def update_dt(self, dx, dy):
+        # drone has a reference to the world
+        # you can compute the weight that is current
+        # to the drone
+        self.dtx -=  abs(dx)
+        self.dty -=  abs(dy)
