@@ -5,6 +5,7 @@ class Simulator:
     def __init__: (self, world, scheduler):
         self.world = world
         self.scheduler = scheduler
+        # self.turns_left = 
 
     def sim_loop(self):
         turns_left = self.max_turns

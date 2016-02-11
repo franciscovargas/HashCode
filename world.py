@@ -1,4 +1,5 @@
 class World:
+
     def __init__(self, rows, columns, drones, maxturns, maxload, products):
         self.rows = rows
         self.columns = columns
@@ -11,10 +12,10 @@ class World:
         self.orders = []
 
     def add_warehouse(self, x, y, stock):
-        self.warehouses.append(Warehouse(x,y,stock, self))
+        self.warehouses.append(Warehouse(x, y, stock, self))
 
     def add_order(self, x, y, size, components):
-        self.orders.append(Order(x,y,size,components, self))
+        self.orders.append(Order(x, y, size, components, self))
 
     @staticmethod
     def load(fname):
@@ -27,9 +28,11 @@ class World:
         product_count = int(lines[1].strip())
         product_weights = [int(x.strip()) for x in lines[2].split(' ')]
 
-        rows, columns, drones, maxturns, maxload = [int(x.strip()) for x in world_params.split(' ', 5)]
-        
-        world = World(rows, columns, drones, maxturns, maxload, product_weights[:product_count])
+        rows, columns, drones, maxturns, maxload = [
+            int(x.strip()) for x in world_params.split(' ', 5)]
+
+        world = World(
+            rows, columns, drones, maxturns, maxload, product_weights[:product_count])
 
         warehouses = int(lines[3].strip())
 
@@ -37,7 +40,8 @@ class World:
 
         for w in range(warehouses):
             x, y = [int(x.strip()) for x in lines[4 + w*2 + 0].split(' ', 2)]
-            stock = [int(x.strip()) for x in lines[4 + w*2 + 1].split(' ', product_count)]
+            stock = [int(x.strip())
+                     for x in lines[4 + w*2 + 1].split(' ', product_count)]
             world.add_warehouse(x, y, stock)
 
         offset = 4+w_lines
@@ -48,21 +52,27 @@ class World:
         offset = offset+1
 
         for o in range(orders):
-            x, y = [int(x.strip()) for x in lines[offset + o*3 + 0].split(' ', 2)]
+            x, y = [int(x.strip())
+                    for x in lines[offset + o*3 + 0].split(' ', 2)]
             size = int(lines[offset + o*3 + 1])
-            components = [int(x.strip()) for x in lines[offset + o*3 + 2].split(' ', size)]
-            world.add_order(x,y,size, components)
+            components = [int(x.strip())
+                          for x in lines[offset + o*3 + 2].split(' ', size)]
+            world.add_order(x, y, size, components)
 
         return world
 
+
 class Warehouse:
+
     def __init__(self, x, y, stock, world):
         self.x = x
         self.y = y
         self.stock = stock
         self._world = world
 
+
 class Order:
+
     def __init__(self, x, y, size, components, world):
         self.x = x
         self.y = y
@@ -74,21 +84,29 @@ class Order:
         return sum([self._world.products[i] for i in self.components])
 
 
-
 class Drone:
 
-    def __init__(self,x,y, world,
-                 product = None,
-                 dist_to_target=(0, 0)):
+    def __init__(self, x, y, world,
+                 pids=None,
+                 target=None):
         self.x = x
         self.y = y
         self.world = world
-        self.dtx , self.dty = dist_to_target
-        self.product = product
+        # self.target = ()
+        self.dt = 0
+        self.pids = pids
+        self.prod_w = [self.world.products[pid]
+                       for pid in self.pids]
+        assert sum(self.product) <= self.world.max_load
 
-    def update_dt(self, dx, dy):
+    def update_dt(self):
         # drone has a reference to the world
         # you can compute the weight that is current
         # to the drone
-        self.dtx -=  abs(dx)
-        self.dty -=  abs(dy)
+        self.dt = max(0, self.dt - 1)
+
+    def compute_total_weight(self):
+        return sum([self._world.products[i] for i in self.components])
+
+    def update_product(self, pid):
+        self.product.append(self.world.products[pid])
