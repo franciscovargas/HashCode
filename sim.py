@@ -10,7 +10,7 @@ class Simulator:
     def sim_loop(self):
         turns_left = self.max_turns
         while (turns_left > 0 and not self.scheduler.stop):
-            update_rules = self.scheduler.decide(turns_left)
+            update_rules = self.scheduler.run()
             # update dictionary of shit.
             self.world.update(update_rules)
             turns_left -= 1
